@@ -56,7 +56,7 @@ int openFile(const char * filepath){
     return 0;
 }
 
-int query(char * key){
+int query(char * key, char * pass){
     sqlite3 *db;
 
     char *zErrMsg = 0;
@@ -96,9 +96,13 @@ int query(char * key){
     if(!filepath || !filename){
         return -6;
     }
-//    if(!password){
+    if(!password){
         openFile(filepath);
-  //  }
+    }
+    else if(!strncmp(pass, password, strlen(pass))){
+        openFile(filepath);
+    }
+    else return -7;
     
 
 
@@ -106,23 +110,40 @@ int query(char * key){
 }
 
 int main(){
-    char * key;
+    char * key, * pass;
     key = (char*) malloc(BUFFER);
     if(!key){
+        sendFail();
+        return 0;
+    }
+    pass = (char*) malloc(BUFFER);
+    if(!pass){
+        free(key);
         sendFail();
         return 0;
     }
     strncpy(key, getenv("REQUEST_URI"), BUFFER); 
     if(!strncmp(key, "/fileServer/", 12))
         memmove(key, key+12, BUFFER-12);
+    char * passPos;
+    passPos = strrchr(key, '&');
+    if(passPos == NULL)
+        pass[0] = 0;
+    else{
+        strncpy(pass, passPos + 1, strlen(passPos+1));
+        pass[strlen(passPos+1)] = 0;
+        *passPos=0;
+    }
     for(int i = 0; i < strlen(key); i++)
         if(key[i] < 43 || key[i] > 122){
             free(key);
+            free(pass);
             sendFail();
             return 0;
         }
-    if(query(key)){
+    if(query(key, pass)){
         free(key);
+        free(pass);
         sendFail();
         return 0;
     }
@@ -130,5 +151,6 @@ int main(){
     //char *filepath = "./files/uwu.png";
     //if(openFile(filepath) != 0) return -1;
     free(key);
+    free(pass);
     return 0;
 }
