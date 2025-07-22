@@ -113,6 +113,8 @@ int main(){
         return 0;
     }
     strncpy(key, getenv("REQUEST_URI"), BUFFER); 
+    if(!strncmp(key, "/fileServer/", 12))
+        memmove(key, key+12, BUFFER-12);
     for(int i = 0; i < strlen(key); i++)
         if(key[i] < 43 || key[i] > 122){
             free(key);
