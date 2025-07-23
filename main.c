@@ -59,7 +59,6 @@ int openFile(const char * filepath){
 int query(char * key, char * pass){
     sqlite3 *db;
 
-    char *zErrMsg = 0;
     int rc;
     sqlite3_stmt *stmt;
     const char *sql = "SELECT password, filename, filepath FROM trans WHERE key = ?;";
@@ -96,16 +95,22 @@ int query(char * key, char * pass){
     if(!filepath || !filename){
         return -6;
     }
-    if(!password){
+    if(!(*password)){
         openFile(filepath);
     }
-    else if(!strncmp(pass, password, strlen(pass))){
-        openFile(filepath);
+    if(!(*pass)){
+        return -7;
     }
-    else return -7;
-    
+    int i = 0;
+    while(pass[i] && password[i] && i < BUFFER){
+        if(pass[i] != password[i])
+            return -8;
+        i+=1;
+    }
+    if(pass[i] || password[i])
+        return -9;
 
-
+    openFile(filepath);
     return 0;
 }
 
