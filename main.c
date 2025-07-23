@@ -15,7 +15,7 @@ void sendFail(){
     "token or password are incorrect or sth idk");
 }
 
-int openFile(const char * filepath){
+int openFile(const char * filepath, const char * filename){
     FILE *f;
     if(!filepath)
         return -1;
@@ -41,7 +41,7 @@ int openFile(const char * filepath){
 
     printf("HTTP/1.1 200 OK\r\n");
     printf("Content-Type: application/octet-stream\r\n");
-    printf("Content-Disposition: attachment; filename=\"test.png\"\r\n");
+    printf("Content-Disposition: attachment; filename=\"%s\"\r\n", filename);
     printf("Content-Length: %ld\r\n", size);
     printf("\r\n");
 
@@ -96,10 +96,10 @@ int query(char * key, char * pass){
         return -6;
     }
     if(!password){
-        openFile(filepath);
+        openFile(filepath, filename);
         return 0;}
     if(!(*password)){
-        openFile(filepath);
+        openFile(filepath, filename);
         return 0;
     }
     if(!(*pass)){
@@ -114,7 +114,7 @@ int query(char * key, char * pass){
     if(pass[i] || password[i])
         return -9;
 
-    openFile(filepath);
+    openFile(filepath, filename);
     return 0;
 }
 
