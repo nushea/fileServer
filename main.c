@@ -95,8 +95,12 @@ int query(char * key, char * pass){
     if(!filepath || !filename){
         return -6;
     }
+    if(!password){
+        openFile(filepath);
+        return 0;}
     if(!(*password)){
         openFile(filepath);
+        return 0;
     }
     if(!(*pass)){
         return -7;
