@@ -29,10 +29,7 @@ int openFile(const char * filepath, const char * filename){
         f = fopen(filepath, "rb");
     
     if (!f) {
-        puts("HTTP/1.1 404 Not Found");
-        puts("Content-Type: text/plain\n");
-        puts("file not found\n");
-        printf("%s",filepath);
+        sendFail();
         return 1;
     }
     fseek(f, 0, SEEK_END);
