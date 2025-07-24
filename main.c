@@ -29,6 +29,7 @@ int openFile(const char * filepath, const char * filename){
         f = fopen(filepath, "rb");
     
     if (!f) {
+        sendFail();
         return 1;
     }
     fseek(f, 0, SEEK_END);
